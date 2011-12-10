@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+    <title></title>
+    <style type="text/css">
+        .obj{
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff0000;
+            border: 1px #000000 solid;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id='mock'>
+    <div class="obj">あ</div>
+    <div class="obj">い</div>
+    <div class="obj">う</div>
+    <div class="obj">え</div>
+    <div class="obj">お</div>
+    <div class="obj">か</div>
+    <div class="obj">き</div>
+    <div class="obj">く</div>
+    <div class="obj">け</div>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../CircleSelector/CircleSelector.js"></script>
+<script>
+    $(function(){
+        $('#mock').CircleSelector(200, 3.14 * 0.1, 5, 20);
+//        var cs = new CircleSelector(200, 3.14 * 0.2, 0.5);
+//        for(var a = 0; a < 3.14 * 2; a += 0.1) {
+//            var div = $('<div class="obj"></div>');
+//            $('body').append(div);
+//            var coor = cs.getCoor(a);
+//            var w = 20 * coor.scale;
+//            div.css('width', w + 'px');
+//            div.css('height', w + 'px');
+//            div.css('top', (coor.y - w / 2 + 200) + 'px');
+//            div.css('left', (coor.x - w / 2 + 200) + 'px');
+//            div.css('z-index', parseInt(coor.scale * 1000) + '');
+//            console.log(coor.scale);
+//        }
+    });
+</script>
+</body>
+</html>
