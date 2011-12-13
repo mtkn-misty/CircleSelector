@@ -6,50 +6,39 @@
     <style type="text/css">
         #mock{
             border: 1px #000000 solid;
+            position: absolute;
             width: 100%;
             height: 500px;
-            top: 50px;
+            top: 100px;
+            left: 100px;
         }
-        .obj{
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ff0000;
-            border: 1px #000000 solid;
-            text-align: center;
+        .obj img{
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
 <div id='mock'>
-    <div class="obj">あ</div>
-    <div class="obj">い</div>
-    <div class="obj">う</div>
-    <div class="obj">え</div>
-    <div class="obj">お</div>
-    <div class="obj">か</div>
-    <div class="obj">き</div>
-    <div class="obj">く</div>
-    <div class="obj">け</div>
+    <!--素材はイラスト・アイコンのフリー素材さんからお借りしています（http://www.soozai.com/site/index001.html）-->
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0034.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i2206.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0057.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0063.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0067.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0076.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0091.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0001.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0002.gif'/></div>
+    <div class="obj"><img src='http://www.soozai.com/image/site-sub/i0016-3.gif'/></div>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../CircleSelector/CircleSelector.js"></script>
 <script>
     $(function(){
-        $('#mock').CircleSelector(200, 3.14 * 0.1, 5, 20);
-//        var cs = new CircleSelector(200, 3.14 * 0.2, 0.5);
-//        for(var a = 0; a < 3.14 * 2; a += 0.1) {
-//            var div = $('<div class="obj"></div>');
-//            $('body').append(div);
-//            var coor = cs.getCoor(a);
-//            var w = 20 * coor.scale;
-//            div.css('width', w + 'px');
-//            div.css('height', w + 'px');
-//            div.css('top', (coor.y - w / 2 + 200) + 'px');
-//            div.css('left', (coor.x - w / 2 + 200) + 'px');
-//            div.css('z-index', parseInt(coor.scale * 1000) + '');
-//            console.log(coor.scale);
-//        }
+        
+        $('#mock').CircleSelector(100, 3.14 * 0.2, 3, 32);
+
     });
 </script>
 </body>
