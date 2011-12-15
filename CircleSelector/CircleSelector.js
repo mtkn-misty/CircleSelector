@@ -1,8 +1,9 @@
-var CircleSelector = function(rad, tht, len) {
+var CircleSelector = function(rad, tht, len, dv) {
     var r = rad;
     var r2 = rad * rad;
     var theta = -tht;
     var revL = 1.0 / len;
+	var decV = dv;
 
     var circleSelector = this;
 
@@ -30,29 +31,20 @@ var CircleSelector = function(rad, tht, len) {
      * @param dx
      */
     this.getDeltaAngle = function(stPtx, finPtx) {
-//        if (stPtx > r) {
-//            stPtx = r;
-//        } else if (stPtx < -r) {
-//            stPtx = -r;
-//        }
-//
-//        if (finPtx > r) {
-//            finPtx = r;
-//        } else if (finPtx < -r) {
-//            finPtx = -r;
-//        }
-//        var y1 = Math.sqrt(r2 - stPtx * stPtx);
-//        var y2 = Math.sqrt(r2 - finPtx * finPtx);
-//        var phi1 = -Math.atan2(stPtx, y1);
-//        var phi2 = Math.atan2(finPtx, y2);
         var dis = (stPtx - finPtx) / 2;
         var dis2 = dis * dis;
-        var y1 = Math.sqrt(r2 - dis2);
-        var y2 = Math.sqrt(r2 - dis2);
-        var phi1 = -Math.atan2(dis, y1);
-        var phi2 = Math.atan2(-dis, y2);
-        
-        return phi1 + phi2;
+        var y = Math.sqrt(r2 - dis2);
+		if(r2 <= dis2) {
+			if(stPtx > finPtx){
+				phi = -Math.PI;
+			} else {
+				phi = Math.PI;
+			}
+		} else {
+        	var phi = -Math.atan2(dis, y) * 2.0;
+		}
+        //console.log(stPtx + ', ' + finPtx  + '/' + (stPtx - finPtx) + ' -- ' + phi + '->' + y + ' #' + r2 + ' ' + dis2 + ' ' + (new Date()).getTime());
+        return phi;
     };
 
     this.getR = function() {
@@ -73,12 +65,14 @@ var CircleSelector = function(rad, tht, len) {
     var size;
     var harfWidth;
     var harfHeight;
+	var interval = 10;
 
     //動的なパラメータ
     var originX;
+	var beforeDAngle = 0.0;
+	var dAngle = 0.0;
+	var decA = 0.0;
     var touchFlg = false;
-
-    var test = 0;
 
     var setPos = function(dom, angle, da) {
         if (!da) {
@@ -93,17 +87,18 @@ var CircleSelector = function(rad, tht, len) {
         dom.css('top', (coor.y + harfHeight) + 'px');
         dom.css('left', (coor.x + harfWidth) + 'px');
         dom.css('z-index', parseInt(coor.scale * 1000) + '');
-        dom.data('angle', {angle: angle, dangle: da});
+        dom.data('angle', angle);
     };
 
     var changePos = function(stPtx, finPtx) {
 
         //全体を回転させる角度を計算
         var da = calcFunc.getDeltaAngle(stPtx, finPtx);
-
+		beforeDAngle = dAngle;
+		dAngle = da;
         children.each(function(i, val) {
             var dom = $(val);
-            setPos(dom, dom.data('angle').angle, da);
+            setPos(dom, dom.data('angle'), da);
         });
 
     };
@@ -141,9 +136,23 @@ var CircleSelector = function(rad, tht, len) {
         children.each(function(i, val) {
             var dom = $(val);
             var before = dom.data('angle');
-            dom.data('angle', {angle: before.angle + before.dangle, dangle: 0});
+            dom.data('angle', before + dAngle);
         });
+		decA = dAngle - beforeDAngle;
     };
+
+	var decVelocity = function() {
+		if(decA !== 0) {
+			if(Math.abs(decA) < 0.0001) {
+				decA = 0;
+			}
+			children.each(function(i, val) {
+				var dom = $(val);
+				setPos(dom, (dom.data('angle') + decA));
+			});
+			decA *= 0.95;
+		}
+	};
 
     var setEvent = function(parent, dom) {
         parent.on('touchstart', startEvent);
@@ -152,6 +161,11 @@ var CircleSelector = function(rad, tht, len) {
         parent.on('mousemove', moveEvent);
         parent.on('touchend', finEvent);
         parent.on('mouseup', finEvent);
+		setInterval(function(){
+			if(!touchFlg){
+				decVelocity();
+			}
+		}, interval);
     };
 
     $.fn.CircleSelector = function(r, theta, len, s) {
@@ -187,6 +201,7 @@ var CircleSelector = function(rad, tht, len) {
         });
         setEvent(parent, children);
         body.css('visibility', 'visible');
+
     };
 }(jQuery));
 
