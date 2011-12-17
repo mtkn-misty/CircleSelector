@@ -74,6 +74,13 @@ var CircleSelector = function(rad, tht, len, dv) {
 	var decA = 0.0;
     var touchFlg = false;
 
+	/**
+	 * domをangle + daの角度の位置に配置する．
+	 * 配置変更後，角度をdom.dataに保存するが，そこにはdaは含まれない．
+	 * @param dom 配置するオブジェクト
+	 * @param angle 今の角度（保存対象）
+	 * @param da 変化する角度（非保存対象）
+	 */
     var setPos = function(dom, angle, da) {
         if (!da) {
             da = 0;
@@ -90,6 +97,11 @@ var CircleSelector = function(rad, tht, len, dv) {
         dom.data('angle', angle);
     };
 
+	/**
+	 * stPtxからfinPtxまでドラッグされた時のオブジェクトの配置を変更する
+	 * @param stPtx
+	 * @param finPtx
+	 */
     var changePos = function(stPtx, finPtx) {
 
         //全体を回転させる角度を計算
@@ -104,14 +116,22 @@ var CircleSelector = function(rad, tht, len, dv) {
     };
 
     /**
-     * スマフォとPCでは座標の撮り方が異なるので。
+     * スマフォとPCでは座標の撮り方が異なるので．
      * @param e
      */
     var getX = function(e) {
         if (event.touches) {
-            return event.touches[0].pageX - harfWidth;
+			var func = function(e){
+				return event.touches[0].pageX - harfWidth;
+			}
+			getX = func;
+            return func(e);
         } else {
-            return e.pageX - harfWidth;
+			var func = function(e) {
+				return e.pageX - harfWidth;
+			}
+			getX = func;
+            return func(e);
         }
     };
 
@@ -119,6 +139,9 @@ var CircleSelector = function(rad, tht, len, dv) {
         e.preventDefault();
         touchFlg = true;
         originX = getX(e);
+		beforeDAngle = 0.0;
+		dAngle = 0.0;
+		decA = 0.0;
     };
 
     var moveEvent = function(e) {
