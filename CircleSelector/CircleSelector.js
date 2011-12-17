@@ -192,6 +192,14 @@ var CircleSelector = function(rad, tht, len, dv) {
 		}, interval);
     };
 
+	/**
+	 * 生成関数
+	 * @param r 円の半径
+	 * @param theta 円の傾きの角度（ラジアン）．0ならば水平で，PI/2ならば垂直．
+	 * @param len パースを引いた時の手前のオブジェクトから消失点までの距離．値が大きいと前後のオブジェクトの大きさが違い，小さいと前後の大きさの違いがなくなる．
+	 * @param s オブジェクトのサイズ．真ん中にあるもの（角度 = 0, PI）がこのサイズになり，位置とlenによりサイズが変わる．
+	 * @param dr オブジェクトを回した時の減速率．0.0-1.0
+	 */
     $.fn.CircleSelector = function(r, theta, len, s, dr) {
         calcFunc = new CircleSelector(r, theta, len);
 
