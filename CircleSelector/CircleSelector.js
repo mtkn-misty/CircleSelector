@@ -1,3 +1,9 @@
+/**
+ * DOMを円形に並べてぐりぐり回せるjQueryプラグイン（α版）．
+ * スマフォ用．ライブアライブの主人公選択画面風です．各DOMにイベント付加することもできます．
+ * @author takano (@mtknnktm)
+ */
+
 var CircleSelector = function(rad, tht, len, dv) {
     var r = rad;
     var r2 = rad * rad;
