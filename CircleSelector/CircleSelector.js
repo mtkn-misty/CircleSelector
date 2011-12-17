@@ -62,10 +62,11 @@ var CircleSelector = function(rad, tht, len, dv) {
     var calcFunc;
 
     //静的なパラメータ
-    var size;
+    var size = 32;
     var harfWidth;
     var harfHeight;
 	var interval = 10;
+	var decRate = 0.9;
 
     //動的なパラメータ
     var originX;
@@ -173,7 +174,7 @@ var CircleSelector = function(rad, tht, len, dv) {
 				var dom = $(val);
 				setPos(dom, (dom.data('angle') + decA));
 			});
-			decA *= 0.95;
+			decA *= decRate;
 		}
 	};
 
@@ -191,7 +192,7 @@ var CircleSelector = function(rad, tht, len, dv) {
 		}, interval);
     };
 
-    $.fn.CircleSelector = function(r, theta, len, s) {
+    $.fn.CircleSelector = function(r, theta, len, s, dr) {
         calcFunc = new CircleSelector(r, theta, len);
 
         var body = $('body').css('visibility', 'hidden');
@@ -207,6 +208,8 @@ var CircleSelector = function(rad, tht, len, dv) {
         var topObj = calcFunc.getCoor(-Math.PI / 2);
 
         harfHeight = topObj.y;
+
+		decRate = dr;
 
         this.css('width', (harfWidth * 2 + size) + 'px');
         this.css('height', (harfHeight * 2 + size * topObj.scale) + 'px');
