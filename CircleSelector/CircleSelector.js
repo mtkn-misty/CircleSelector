@@ -3,7 +3,7 @@
  * スマフォ用．ライブアライブの主人公選択画面風です．各DOMにイベント付加することもできます．
  *	Copyright	mtkn (@mtknnktm)
  *	License		MIT / http://bit.ly/mit-license
- *	Version		0.1
+ *	Version		0.1.1
  */
 
 var CircleSelector = function(rad, tht, len, dv) {
@@ -76,12 +76,15 @@ var CircleSelector = function(rad, tht, len, dv) {
 	var interval = 10;
 	var decRate = 0.9;
 
+	var clickCallBack;
+
     //動的なパラメータ
     var originX;
 	var beforeDAngle = 0.0;
 	var dAngle = 0.0;
 	var decA = 0.0;
     var touchFlg = false;
+	var moveFlg = false;
 
 	/**
 	 * domをangle + daの角度の位置に配置する．
@@ -147,6 +150,7 @@ var CircleSelector = function(rad, tht, len, dv) {
     var startEvent = function(e) {
         e.preventDefault();
         touchFlg = true;
+		moveFlg = false;
         originX = getX(e);
 		beforeDAngle = 0.0;
 		dAngle = 0.0;
@@ -158,12 +162,22 @@ var CircleSelector = function(rad, tht, len, dv) {
         if (touchFlg) {
             var x = getX(e);
             changePos(originX, x);
+			if(Math.abs(dAngle) > 0.01) {
+				moveFlg = true;
+			}
         }
     };
 
     var finEvent = function(e) {
         e.preventDefault();
         touchFlg = false;
+
+		setTimeout(function(){
+			if(!moveFlg && !$(e.target).hasClass('__CircleSelector__')) {
+				clickCallBack.apply($(e.target), [e]);
+				moveFlg = false;
+			}
+		}, 0);
 
         children.each(function(i, val) {
             var dom = $(val);
@@ -174,7 +188,8 @@ var CircleSelector = function(rad, tht, len, dv) {
     };
 
 	var decVelocity = function() {
-		if(decA !== 0) {
+		if(decA !== 0)
+		{
 			if(Math.abs(decA) < 0.0001) {
 				decA = 0;
 			}
@@ -207,17 +222,19 @@ var CircleSelector = function(rad, tht, len, dv) {
 	 * @param len パースを引いた時の手前のオブジェクトから消失点までの距離．値が大きいと前後のオブジェクトの大きさが違い，小さいと前後の大きさの違いがなくなる．
 	 * @param s オブジェクトのサイズ．真ん中にあるもの（角度 = 0, PI）がこのサイズになり，位置とlenによりサイズが変わる．
 	 * @param dr オブジェクトを回した時の減速率．0.0-1.0
+	 * @param callBack オブジェクトをクリックした時のコールバックイベント．thisでクリックされたオブジェクトのjQueryオブジェクトが取得可能．
 	 */
-    $.fn.CircleSelector = function(r, theta, len, s, dr) {
+    $.fn.CircleSelector = function(r, theta, len, s, dr, callBack) {
         calcFunc = new CircleSelector(r, theta, len);
 
         var body = $('body').css('visibility', 'hidden');
 
         parent = this;
-        parent.css('z-index', '100').css('position', 'relative');
+        parent.addClass('__CircleSelector__').css('position', 'relative');
         children = parent.children();
         var num = children.length;
         size = s;
+		clickCallBack = callBack;
 
         //サイズを求める
         harfWidth = r;
@@ -230,11 +247,6 @@ var CircleSelector = function(rad, tht, len, dv) {
         this.css('width', (harfWidth * 2 + size) + 'px');
         this.css('height', (harfHeight * 2 + size * topObj.scale) + 'px');
 
-
-        this.blur(function(e) {
-            touchFlg = false;
-        });
-
         children.each(function(i, val) {
             var angle = Math.PI * 2 * i / num;
             var dom = $(val).css('position', 'absolute');
@@ -245,6 +257,11 @@ var CircleSelector = function(rad, tht, len, dv) {
         body.css('visibility', 'visible');
 
     };
+	$.fn.getCircleSelectorStatus = function() {
+		return 	{
+			move: moveFlg
+		};
+	};
 }(jQuery));
 
 
